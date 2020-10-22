@@ -21,7 +21,7 @@ public class Unzip {
 	}
 
 	/**
-	 * @brief	フォルダ内のzipファイルを解凍する
+	 * フォルダ内のzipファイルを解凍する
 	 */
 	public void execUnzip() {
 		ArrayList<File> fileList = GetFiles.getSpecificFiles(this.zipDir, "zip");

@@ -1,14 +1,15 @@
 package functions;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
 public class CompareDocxContents {
 	/**
-	 * @brief	2つのフォルダ内のdocxを解凍したフォルダのxml同士を比較
+	 * 2つのフォルダ内のdocxを解凍したフォルダのxml同士を比較
 	 * @param	基準となるフォルダ
 	 * @param	比較するフォルダ
 	 * @return	比較結果
@@ -65,7 +66,7 @@ public class CompareDocxContents {
 	}
 
 	/**
-	 * @brief	docxを解凍したフォルダ単位でxml同士を比較
+	 * docxを解凍したフォルダ単位でxml同士を比較
 	 * @param	基準となるファイル
 	 * @param	比較するファイル
 	 * @return	比較結果の文字列
@@ -118,30 +119,30 @@ public class CompareDocxContents {
 	}
 
 	/**
-	 * @brief	xmlファイルのテキストを">"単位の文字列のリストにする
+	 * xmlファイルのテキストを">"単位の文字列のリストにする
 	 * @param	文字列リストを生成するファイル
 	 * @return	">"単位で区切った文字列リスト
 	 */
 	private static ArrayList<String> getFileString(File file) {
 		ArrayList<String> textLines = new ArrayList<String>();
-		try (FileReader fr = new FileReader(file);
-				BufferedReader br = new BufferedReader(fr)) {
-			String text;
-			while((text = br.readLine()) != null) {
-				String[] splitTexts = text.split(">");
-				for (String splitText : splitTexts) {
-					textLines.add(splitText+">");
-				}
-			}
+		Path filePath = Paths.get(file.getAbsolutePath());
+		String text = "";
+		try {
+			text = Files.readString(filePath);
 		} catch (IOException e) {
 			e.printStackTrace();
+		}
+
+		String[] splitTexts = text.split(">");
+		for(String splitText : splitTexts) {
+			textLines.add(splitText+">");
 		}
 
 		return textLines;
 	}
 
 	/**
-	 * @brief	2つの文字列リストを比較する
+	 * 2つの文字列リストを比較する
 	 * @param	基準となる文字列リスト
 	 * @param	比較する文字列リスト
 	 * @return	比較結果の文字列（一致している場合はnull)

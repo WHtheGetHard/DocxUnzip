@@ -9,7 +9,7 @@ import java.util.ArrayList;
  */
 public class GetFiles {
 	/**
-	 * @brief	現在のフォルダ内から特定の拡張子のファイル一覧を取得
+	 * 現在のフォルダ内から特定の拡張子のファイル一覧を取得
 	 * @param	対象のフォルダ
 	 * @param	拡張子
 	 * @return	拡張子に一致するファイル一覧
@@ -28,7 +28,7 @@ public class GetFiles {
 	}
 
 	/**
-	 * @brief	ファイルの拡張子が一致しているか
+	 * ファイルの拡張子が一致しているか
 	 * @param	ファイル名
 	 * @param	拡張子
 	 * @return	一致している
@@ -40,7 +40,7 @@ public class GetFiles {
 	}
 
 	/**
-	 * @brief	サブフォルダも含めてフォルダ内のファイルをすべて取得
+	 * サブフォルダも含めてフォルダ内のファイルをすべて取得
 	 * @param	対象のフォルダ
 	 * @return	ファイル一覧
 	 */

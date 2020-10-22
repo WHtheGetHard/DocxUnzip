@@ -25,16 +25,16 @@ public class ChangeToZip {
 	}
 
 	/**
-	 * @brief	docxファイルを保存先にzipファイルとして保存する
+	 * docxファイルを保存先にzipファイルとして保存する
 	 * @param	docxファイルのリスト
 	 */
-	public void chageDocxToZip(ArrayList<File> fileList) {
+	public void changeDocxToZip(ArrayList<File> fileList) {
 		this.copyToDestination(fileList);
 		this.renameToZip();
 	}
 
 	/**
-	 * @brief	ファイルを保存先にコピーする
+	 * ファイルを保存先にコピーする
 	 * @param	コピーするファイルのリスト
 	 */
 	private void copyToDestination(ArrayList<File> fileList) {
@@ -51,7 +51,7 @@ public class ChangeToZip {
 	}
 
 	/**
-	 * @brief	docxをzipに変更する
+	 * docxをzipに変更する
 	 */
 	private void renameToZip() {
 		ArrayList<File> fileList = GetFiles.getSpecificFiles(this.destinationDir, "docx");
