@@ -93,12 +93,11 @@ public class CompareDocxContents {
 				for (File compXml : compFileList) {
 					if (!baseXml.getName().equals(compXml.getName())) continue;
 					if (expectAndIgnore.getIgnoreFiles().contains(baseXml.getName())) continue;
-					//if (baseXml.getName().equals("document.xml")) continue;
 
 					ArrayList<String> baseTexts = getFileString(baseXml);
 					ArrayList<String> compTexts = getFileString(compXml);
 
-					String textCompResult = compTexts(baseTexts, compTexts);
+					String textCompResult = compTexts(baseTexts, compTexts, baseXml.getName());
 					if (textCompResult == null) continue;
 					unMatchContents.append(baseXml.getName() + "ファイルの差異\n");
 					unMatch = true;
@@ -108,11 +107,11 @@ public class CompareDocxContents {
 		} else {
 			for(int fileCounter = 0; fileCounter < baseFileNumber; ++fileCounter) {
 				if (expectAndIgnore.getIgnoreFiles().contains(baseFileList.get(fileCounter).getName())) continue;
-				//if (baseFileList.get(fileCounter).getName().equals("document.xml")) continue;
+
 				ArrayList<String> baseTexts = getFileString(baseFileList.get(fileCounter));
 				ArrayList<String> compTexts = getFileString(compFileList.get(fileCounter));
 
-				String textCompResult = compTexts(baseTexts, compTexts);
+				String textCompResult = compTexts(baseTexts, compTexts, baseFileList.get(fileCounter).getName());
 				if (textCompResult == null) continue;
 				unMatchContents.append(baseFileList.get(fileCounter).getName() + "ファイルの差異\n");
 				unMatch = true;
@@ -150,9 +149,10 @@ public class CompareDocxContents {
 	 * 2つの文字列リストを比較する
 	 * @param	基準となる文字列リスト
 	 * @param	比較する文字列リスト
+	 * @param	比較しているファイル名
 	 * @return	比較結果の文字列（一致している場合はnull)
 	 */
-	private static String compTexts(ArrayList<String> baseTexts, ArrayList<String> compTexts) {
+	private static String compTexts(ArrayList<String> baseTexts, ArrayList<String> compTexts, String fileName) {
 		int baseTextsNumber = baseTexts.size();
 		int compTextsNumber = compTexts.size();
 
@@ -164,6 +164,13 @@ public class CompareDocxContents {
 		ArrayList<String> compDiff = new ArrayList<String>();
 		for (int textCounter = 0; textCounter < baseTextsNumber; ++textCounter) {
 			if (baseTexts.get(textCounter).equals(compTexts.get(textCounter))) continue;
+
+
+			if (expectAndIgnore.getExpectFiles().contains(fileName)) {
+				boolean isExpectedDiff = isExpected(baseTexts.get(textCounter), compTexts.get(textCounter), fileName);
+				if (isExpectedDiff) continue;
+			}
+
 			baseDiff.add(baseTexts.get(textCounter));
 			compDiff.add(compTexts.get(textCounter));
 			unMatch = true;
@@ -176,5 +183,29 @@ public class CompareDocxContents {
 		}
 
 		return unMatch ? unMatchContents.toString() : null;
+	}
+
+	/**
+	 * 差異がある文字列は予測されているものか
+	 * @param	基準となる文字列
+	 * @param	比較する文字列
+	 * @param	比較しているファイル名
+	 * @return	差異を許容するか
+	 */
+	private static boolean isExpected(String baseText, String compText, String fileName) {
+		for (String tag : expectAndIgnore.getExpectTags().get(fileName)) {
+			boolean baseMatch = false;
+			boolean compMatch = false;
+
+			baseMatch = baseText.contains(tag + " ");
+			compMatch = compText.contains(tag + " ");
+			if (baseMatch && compMatch) return true;
+
+			baseMatch = baseText.contains(tag + ">");
+			compMatch = compText.contains(tag + ">");
+			if (baseMatch && compMatch) return true;
+		}
+
+		return false;
 	}
 }
