@@ -7,7 +7,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
+import fieldsformats.ExpectAndIgnore;
+
 public class CompareDocxContents {
+	private static ExpectAndIgnore expectAndIgnore = new ExpectAndIgnore("C:\\JavaDevs\\DocxUnzip\\initFile\\ExpectAndIgnore.json");
 	/**
 	 * 2つのフォルダ内のdocxを解凍したフォルダのxml同士を比較
 	 * @param	基準となるフォルダ
@@ -89,7 +92,8 @@ public class CompareDocxContents {
 			for (File baseXml : baseFileList) {
 				for (File compXml : compFileList) {
 					if (!baseXml.getName().equals(compXml.getName())) continue;
-					if (baseXml.getName().equals("document.xml")) continue;
+					if (expectAndIgnore.getIgnoreFiles().contains(baseXml.getName())) continue;
+					//if (baseXml.getName().equals("document.xml")) continue;
 
 					ArrayList<String> baseTexts = getFileString(baseXml);
 					ArrayList<String> compTexts = getFileString(compXml);
@@ -103,7 +107,8 @@ public class CompareDocxContents {
 			}
 		} else {
 			for(int fileCounter = 0; fileCounter < baseFileNumber; ++fileCounter) {
-				if (baseFileList.get(fileCounter).getName().equals("document.xml")) continue;
+				if (expectAndIgnore.getIgnoreFiles().contains(baseFileList.get(fileCounter).getName())) continue;
+				//if (baseFileList.get(fileCounter).getName().equals("document.xml")) continue;
 				ArrayList<String> baseTexts = getFileString(baseFileList.get(fileCounter));
 				ArrayList<String> compTexts = getFileString(compFileList.get(fileCounter));
 
