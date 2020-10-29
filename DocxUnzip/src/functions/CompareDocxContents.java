@@ -198,12 +198,7 @@ public class CompareDocxContents {
 	 */
 	private static boolean isExpected(String baseText, String compText, String fileName) {
 		for (String tag : expectAndIgnore.getExpectTags().get(fileName)) {
-			boolean baseMatch = false;
-			boolean compMatch = false;
-
-			baseMatch = baseText.contains(tag);
-			compMatch = compText.contains(tag);
-			if (baseMatch && compMatch) return true;
+			if (baseText.contains(tag) && compText.contains(tag)) return true;
 		}
 
 		return false;
