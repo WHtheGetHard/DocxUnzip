@@ -69,6 +69,10 @@ public class XmlParse extends DefaultHandler {
 		for (int i = xmlListsLast -2; i <= xmlListsLast; ++i) {
 			this.sb.append(this.xmlLists.get(i));
 		}
+		for (int i = xmlListsLast; i >= xmlListsLast - 2; --i) {
+			this.xmlLists.remove(i);
+		}
+		this.xmlLists.add(this.sb.toString());
 		this.isParseTextNode = false;
 	}
 }
