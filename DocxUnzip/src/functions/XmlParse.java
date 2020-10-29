@@ -49,9 +49,11 @@ public class XmlParse extends DefaultHandler {
 	 * @param 文字配列内の開始位置
 	 * @param 文字配列から使用される文字数
 	 */
-	public void charcters(char[] ch, int offset, int length) {
+	public void characters(char[] ch, int offset, int length) {
 		String text = new String(ch, offset, length);
-		this.xmlLists.add(text);
+		if (text != null && !"".equals(text)) {
+			this.xmlLists.add(text);
+		}
 	}
 
 	/**
@@ -66,7 +68,7 @@ public class XmlParse extends DefaultHandler {
 			String tempReplace = this.xmlLists.get(xmlListsLast).replaceAll(">", "/>");
 			this.xmlLists.set(xmlListsLast, tempReplace);
 		} else {
-			xmlLists.add("</" + qName + ">");
+			this.xmlLists.add("</" + qName + ">");
 		}
 	}
 }
