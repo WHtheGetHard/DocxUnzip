@@ -17,11 +17,11 @@ public class XmlParse extends DefaultHandler {
 		return this.xmlLists;
 	}
 
-	// イベント発生前の接頭辞付きの修飾名（タグ）
-	private String prevQName = "";
-
 	// 開始タグの属性を結合するためのStringBuilder
 	private StringBuilder sb = new StringBuilder();
+
+	// テキストノードに到達したか
+	private boolean isParseTextNode = false;
 
 	/**
 	 * 開始タグに到達した際に開始タグをxmlListsに追加する
@@ -38,9 +38,6 @@ public class XmlParse extends DefaultHandler {
 		}
 		this.sb.append(">");
 		this.xmlLists.add(sb.toString());
-
-		this.prevQName = "";
-		this.prevQName = qName;
 	}
 
 	/**
@@ -53,6 +50,7 @@ public class XmlParse extends DefaultHandler {
 		String text = new String(ch, offset, length);
 		if (text != null && !"".equals(text)) {
 			this.xmlLists.add(text);
+			this.isParseTextNode = true;
 		}
 	}
 
@@ -63,12 +61,14 @@ public class XmlParse extends DefaultHandler {
 	 * @param	接頭辞付きの修飾名
 	 */
 	public void endElement(String uri, String localName, String qName) {
-		if (qName.equals(this.prevQName)) {
-			int xmlListsLast = this.xmlLists.size() - 1;
-			String tempReplace = this.xmlLists.get(xmlListsLast).replaceAll(">", "/>");
-			this.xmlLists.set(xmlListsLast, tempReplace);
-		} else {
-			this.xmlLists.add("</" + qName + ">");
+		this.xmlLists.add("</" + qName + ">");
+		if (!this.isParseTextNode) return;
+
+		int xmlListsLast = this.xmlLists.size() - 1;
+		this.sb.setLength(0);
+		for (int i = xmlListsLast -2; i <= xmlListsLast; ++i) {
+			this.sb.append(this.xmlLists.get(i));
 		}
+		this.isParseTextNode = false;
 	}
 }
