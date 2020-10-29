@@ -2,10 +2,13 @@ package functions;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+
+import org.xml.sax.SAXException;
 
 import fieldsformats.ExpectAndIgnore;
 
@@ -129,19 +132,20 @@ public class CompareDocxContents {
 	 */
 	private static ArrayList<String> getFileString(File file) {
 		ArrayList<String> textLines = new ArrayList<String>();
-		Path filePath = Paths.get(file.getAbsolutePath());
-		String text = "";
+
+		XmlParse xmlParse = new XmlParse();
+		SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
 		try {
-			text = Files.readString(filePath);
+			SAXParser saxParser = saxParserFactory.newSAXParser();
+			saxParser.parse(file, xmlParse);
+			textLines = xmlParse.getXmlLists();
+		} catch (ParserConfigurationException e) {
+			e.printStackTrace();
+		} catch (SAXException e) {
+			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
-		String[] splitTexts = text.split(">");
-		for(String splitText : splitTexts) {
-			textLines.add(splitText+">");
-		}
-
 		return textLines;
 	}
 
@@ -197,12 +201,8 @@ public class CompareDocxContents {
 			boolean baseMatch = false;
 			boolean compMatch = false;
 
-			baseMatch = baseText.contains(tag + " ");
-			compMatch = compText.contains(tag + " ");
-			if (baseMatch && compMatch) return true;
-
-			baseMatch = baseText.contains(tag + ">");
-			compMatch = compText.contains(tag + ">");
+			baseMatch = baseText.contains(tag);
+			compMatch = compText.contains(tag);
 			if (baseMatch && compMatch) return true;
 		}
 
